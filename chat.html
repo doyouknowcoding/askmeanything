@@ -2,8 +2,20 @@
 <html>
 <head>
   <title>Realtime Chat</title>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    #chat-box { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
+    .message { margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <h2>Realtime Chat</h2>
+  <div id="chat-box"></div>
+  <input type="text" id="username" placeholder="Your name" />
+  <input type="text" id="message" placeholder="Type a message..." />
+  <button onclick="sendMessage()">Send</button>
+
   <script type="module">
-    // Import Firebase modules
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
     import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
@@ -44,18 +56,5 @@
       chatBox.scrollTop = chatBox.scrollHeight;
     });
   </script>
-
-  <style>
-    body { font-family: Arial; margin: 20px; }
-    #chat-box { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
-    .message { margin: 5px 0; }
-  </style>
-</head>
-<body>
-  <h2>Realtime Chat</h2>
-  <div id="chat-box"></div>
-  <input type="text" id="username" placeholder="Your name" />
-  <input type="text" id="message" placeholder="Type a message..." />
-  <button onclick="sendMessage()">Send</button>
 </body>
 </html>
