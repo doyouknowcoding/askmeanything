@@ -1,12 +1,11 @@
-
 <!DOCTYPE html>
 <html>
 <head>
   <title>Realtime Chat</title>
+
+  <!-- Firebase SDKs -->
   https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js
-  https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js
-  <style>
-    body { font-family: Arial; margin: 20px; }
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></scriptfont-family: Arial; margin: 20px; }
     #chat-box { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
     .message { margin: 5px 0; }
   </style>
@@ -19,17 +18,18 @@
   <button onclick="sendMessage()">Send</button>
 
   <script>
-    // Replace with your Firebase config
+    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyA99pAdQQVdEHWQTHhPfX5Rz8UV5e0qZ9o",
       authDomain: "doyouknowcoding.firebaseapp.com",
       databaseURL: "https://doyouknowcoding-default-rtdb.firebaseio.com",
       projectId: "doyouknowcoding",
-      storageBucket: "doyouknowcoding.firebasestorage.app",
+      storageBucket: "doyouknowcoding.appspot.com",
       messagingSenderId: "533893193232",
       appId: "1:533893193232:web:81ade7bb4ee43210e17495"
     };
 
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
