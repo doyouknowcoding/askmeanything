@@ -6,18 +6,22 @@
     body { font-family: Arial; margin: 20px; }
     #chat-box { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
     .message { margin: 5px 0; }
+    #controls { margin-top: 10px; }
   </style>
 </head>
 <body>
-  <h2>Realtime Chat</h2>
+  <h2>Welcome</h2>
   <div id="chat-box"></div>
   <input type="text" id="username" placeholder="Your name" />
   <input type="text" id="message" placeholder="Type a message..." />
-  <button onclick="sendMessage()">Send</button>
+  <div id="controls">
+    <button onclick="sendMessage()">Send</button>
+    <button onclick="clearChat()">Clear</button>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+    import { getDatabase, ref, push, onChildAdded, remove } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyA99pAdQQVdEHWQTHhPfX5Rz8UV5e0qZ9o",
@@ -31,15 +35,15 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-
+    const messagesRef = ref(db, 'messages');
     const chatBox = document.getElementById('chat-box');
 
     window.sendMessage = function () {
-      const username = document.getElementById('username').value;
-      const message = document.getElementById('message').value;
+      const username = document.getElementById('username').value.trim();
+      const message = document.getElementById('message').value.trim();
       if (!username || !message) return;
 
-      push(ref(db, 'messages'), {
+      push(messagesRef, {
         name: username,
         text: message
       });
@@ -47,7 +51,12 @@
       document.getElementById('message').value = '';
     };
 
-    onChildAdded(ref(db, 'messages'), snapshot => {
+    window.clearChat = function () {
+      remove(messagesRef);
+      chatBox.innerHTML = '';
+    };
+
+    onChildAdded(messagesRef, snapshot => {
       const msg = snapshot.val();
       const msgDiv = document.createElement('div');
       msgDiv.className = 'message';
@@ -55,6 +64,20 @@
       chatBox.appendChild(msgDiv);
       chatBox.scrollTop = chatBox.scrollHeight;
     });
+
+    // Send message on Enter key
+    document.getElementById('message').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+
+    
+window.onload = function () {
+  remove(messagesRef);
+  chatBox.innerHTML = '';
+};
+
   </script>
 </body>
 </html>
