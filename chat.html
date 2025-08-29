@@ -2,23 +2,11 @@
 <html>
 <head>
   <title>Realtime Chat</title>
+  <script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
-  <!-- Firebase SDKs -->
-  https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></scriptfont-family: Arial; margin: 20px; }
-    #chat-box { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
-    .message { margin: 5px 0; }
-  </style>
-</head>
-<body>
-  <h2>Realtime Chat</h2>
-  <div id="chat-box"></div>
-  <input type="text" id="username" placeholder="Your name" />
-  <input type="text" id="message" placeholder="Type a message..." />
-  <button onclick="sendMessage()">Send</button>
-
-  <script>
-    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyA99pAdQQVdEHWQTHhPfX5Rz8UV5e0qZ9o",
       authDomain: "doyouknowcoding.firebaseapp.com",
@@ -29,26 +17,25 @@
       appId: "1:533893193232:web:81ade7bb4ee43210e17495"
     };
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
     const chatBox = document.getElementById('chat-box');
 
-    function sendMessage() {
+    window.sendMessage = function () {
       const username = document.getElementById('username').value;
       const message = document.getElementById('message').value;
       if (!username || !message) return;
 
-      db.ref('messages').push({
+      push(ref(db, 'messages'), {
         name: username,
         text: message
       });
 
       document.getElementById('message').value = '';
-    }
+    };
 
-    db.ref('messages').on('child_added', snapshot => {
+    onChildAdded(ref(db, 'messages'), snapshot => {
       const msg = snapshot.val();
       const msgDiv = document.createElement('div');
       msgDiv.className = 'message';
@@ -57,5 +44,18 @@
       chatBox.scrollTop = chatBox.scrollHeight;
     });
   </script>
+
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    #chat-box { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
+    .message { margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <h2>Realtime Chat</h2>
+  <div id="chat-box"></div>
+  <input type="text" id="username" placeholder="Your name" />
+  <input type="text" id="message" placeholder="Type a message..." />
+  <button onclick="sendMessage()">Send</button>
 </body>
 </html>
