@@ -1,46 +1,61 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Simple Chat App</title>
+  <title>Realtime Chat</title>
+  https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js
+  https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js
   <style>
     body { font-family: Arial; margin: 20px; }
     #chat-box { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
     .message { margin: 5px 0; }
-    .user { color: blue; }
-    .bot { color: green; }
   </style>
 </head>
 <body>
-  <h2>Simple Chat App</h2>
+  <h2>Realtime Chat</h2>
   <div id="chat-box"></div>
-  <input type="text" id="user-input" placeholder="Type a message..." />
+  <input type="text" id="username" placeholder="Your name" />
+  <input type="text" id="message" placeholder="Type a message..." />
   <button onclick="sendMessage()">Send</button>
 
   <script>
+    // Replace with your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyA99pAdQQVdEHWQTHhPfX5Rz8UV5e0qZ9o",
+      authDomain: "doyouknowcoding.firebaseapp.com",
+      databaseURL: "https://doyouknowcoding-default-rtdb.firebaseio.com",
+      projectId: "doyouknowcoding",
+      storageBucket: "doyouknowcoding.firebasestorage.app",
+      messagingSenderId: "533893193232",
+      appId: "1:533893193232:web:81ade7bb4ee43210e17495"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
     const chatBox = document.getElementById('chat-box');
-    const userInput = document.getElementById('user-input');
 
     function sendMessage() {
-      const message = userInput.value.trim();
-      if (!message) return;
+      const username = document.getElementById('username').value;
+      const message = document.getElementById('message').value;
+      if (!username || !message) return;
 
-      appendMessage('user', message);
-      userInput.value = '';
+      db.ref('messages').push({
+        name: username,
+        text: message
+      });
 
-      // Simulate bot response
-      setTimeout(() => {
-        const response = `You said: "${message}"`;
-        appendMessage('bot', response);
-      }, 500);
+      document.getElementById('message').value = '';
     }
 
-    function appendMessage(sender, text) {
+    db.ref('messages').on('child_added', snapshot => {
+      const msg = snapshot.val();
       const msgDiv = document.createElement('div');
-      msgDiv.className = `message ${sender}`;
-      msgDiv.textContent = `${sender === 'user' ? 'You' : 'Bot'}: ${text}`;
+      msgDiv.className = 'message';
+      msgDiv.textContent = `${msg.name}: ${msg.text}`;
       chatBox.appendChild(msgDiv);
       chatBox.scrollTop = chatBox.scrollHeight;
-    }
+    });
   </script>
 </body>
+</html>
